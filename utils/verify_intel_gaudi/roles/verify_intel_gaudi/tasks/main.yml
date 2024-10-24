@@ -48,7 +48,7 @@
 - name: Update node accelerator status
   ansible.builtin.set_fact:
     node_has_gaudi2: true
-  when: node_has_gaudi3 == false 
+  when: node_has_gaudi3 == false
   when: lspci_output.stdout | length > 0
 
 - name: Set verify_intel_gaudi_with_sanity_test_only parameter
@@ -64,6 +64,11 @@
   when: node_has_gaudi2
 
 
-- name: Verify hccl on Gaudi nodes
-  ansible.builtin.include_tasks: hccl_validation.yml
-  when: node_has_gaudi2 or node_has_gaudi3
+- name: Verify hccl on Gaudi2 nodes
+  ansible.builtin.include_tasks: hccl_gaudi2_validation.yml
+  when: node_has_gaudi2
+
+- name: Verify hccl on Gaudi3 nodes
+  ansible.builtin.include_tasks: hccl_gaudi3_validation.yml
+  when: node_has_gaudi3
+
