@@ -51,24 +51,27 @@
   when: node_has_gaudi3 == false
   when: lspci_output.stdout | length > 0
 
-- name: Set verify_intel_gaudi_with_sanity_test_only parameter
-  ansible.builtin.set_fact:
-    verify_intel_gaudi_with_sanity_test_only: "{{ hostvars['localhost']['verify_intel_gaudi_with_sanity_test_only'] }}"
+- name: Include omnia_config.yml
+  block:
+    - ansible.builtin.include_tasks: include_omnia_config.yml
+  delegate_to: localhost
 
 - name: Verify hl-qual on Gaudi3 nodes
   ansible.builtin.include_tasks: hlqual_gaudi3_validation.yml
   when: node_has_gaudi3
+  when: run_intel_gaudi_tests
 
 - name: Verify hl-qual on Gaudi2 nodes
   ansible.builtin.include_tasks: hlqual_gaudi2_validation.yml
   when: node_has_gaudi2
-
+  when: run_intel_gaudi_tests
 
 - name: Verify hccl on Gaudi2 nodes
   ansible.builtin.include_tasks: hccl_gaudi2_validation.yml
   when: node_has_gaudi2
+  when: run_intel_gaudi_tests
 
 - name: Verify hccl on Gaudi3 nodes
   ansible.builtin.include_tasks: hccl_gaudi3_validation.yml
   when: node_has_gaudi3
-
+  when: run_intel_gaudi_tests
